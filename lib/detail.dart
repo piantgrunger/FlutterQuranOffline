@@ -5,6 +5,7 @@ import 'model/surat.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'service/ayat_service.dart';
 import 'dart:convert';
+import 'service/sharedpref.dart';
 
 class Detail extends StatefulWidget {
   final Surat surat;
@@ -64,6 +65,8 @@ class SuratWidget extends StatefulWidget {
 class _SuratWidgetState extends State<SuratWidget> {
   final SuratDetail _suratDetail;
 
+  double _fontSize;
+
   _SuratWidgetState(this._suratDetail);
 
   AudioPlayer _audioPlayer;
@@ -72,6 +75,9 @@ class _SuratWidgetState extends State<SuratWidget> {
   void initState() {
     super.initState();
     _audioPlayer = new AudioPlayer();
+    getFontSize().then((value) => setState(() {
+          _fontSize = value;
+        }));
   }
 
   @override
@@ -91,7 +97,8 @@ class _SuratWidgetState extends State<SuratWidget> {
               textDirection: TextDirection.rtl,
               child: new Text(
                 widget._suratDetail.ayatArab,
-                style: new TextStyle(fontSize: 40.0, fontFamily: 'IsepMisbah'),
+                style: new TextStyle(
+                    fontSize: _fontSize, fontFamily: 'IsepMisbah'),
                 textAlign: TextAlign.right,
               ),
             ),

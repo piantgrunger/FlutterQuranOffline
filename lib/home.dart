@@ -1,5 +1,6 @@
 import 'service/surat_service.dart';
 import 'model/surat.dart';
+import 'service/sharedpref.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Surat> _surat;
+  double _changeFontSize;
 
   Future<List<Surat>> loadSurat() async {
     String jsonAddress = await loadSuratAsset();
@@ -28,6 +30,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void initState() {
     super.initState();
+    getFontSize().then((value) => setState(() {
+          _changeFontSize = value;
+        }));
   }
 
   @override
@@ -43,6 +48,29 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+      ),
+      drawer: Drawer(
+        child: Center(
+          child: ListTile(
+            title: Text("Setting"),
+            subtitle: Column(children: [
+              Text("Ukuran Font Ayat"),
+              Slider(
+                value: _changeFontSize,
+                min: 10,
+                max: 100,
+                divisions: 5,
+                label: _changeFontSize.round().toString(),
+                onChanged: (double value) async {
+                  setState(() {
+                    _changeFontSize = value;
+                  });
+                  await updateFontSize(value);
+                },
+              ),
+            ]),
+          ),
+        ),
       ),
       body: FutureBuilder(
           future: loadSurat(),
